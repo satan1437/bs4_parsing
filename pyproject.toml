@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "parsing_with_bs4"
+version = "0.1.0"
+description = ""
+authors = ["Satan1437 <exemplles.white@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+beautifulsoup4 = "^4.11.1"
+lxml = "^4.9.0"
+requests = "^2.27.1"
+fake-useragent = "^0.1.11"
+art = "^5.6"
+rich = "^12.4.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

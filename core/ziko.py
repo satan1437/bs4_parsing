@@ -6,7 +6,7 @@ from art import tprint
 from bs4 import BeautifulSoup
 from rich.console import Console
 
-from utils import save_json
+from .utils import save_json
 
 # URL_API = 'https://www.ziko.pl/wp-admin/admin-ajax.php?action=get_pharmacies'
 URL_POINT = 'https://www.ziko.pl/lokalizator/'
@@ -61,7 +61,7 @@ def get_content(soup: BeautifulSoup) -> List:
 		raw_link = row.find('div', class_='morepharmacy').find('a').get('href')
 		detail = get_soup(URL + raw_link)
 		raw_geo = detail.find('div', 'coordinates').find_all('span')
-		latlon = [i.text.split()[-1] for i in raw_geo]
+		latlon = [float(i.text.split()[-1]) for i in raw_geo]
 		output.append({
 			'address': address,
 			'latlon': latlon,
@@ -70,18 +70,18 @@ def get_content(soup: BeautifulSoup) -> List:
 			'working_hours': working_hours
 		})
 		count += 1
-		console.print(f'[bold yellow][+][Ziko] Прогресс [{count}/{amount}][/bold yellow]')
+		console.print(f'[bold][+][Ziko] Прогресс [{count}/{amount}][/bold]', style='#F4A616')
 	return output
 
 
-def main(url: str) -> None:
+def parse() -> None:
 	tprint('Ziko', font='cybermedium')
-	console.print("[bold cyan][+][Ziko] Начинаю парсить...[/bold cyan]")
-	soup = get_soup(url)
+	console.print("[bold][+][Ziko] Начинаю парсить...[/bold]", style='#F4A616')
+	soup = get_soup(URL_POINT)
 	data = get_content(soup)
-	console.print(f'[bold cyan][?][Ziko] Всего объектов записано: [/bold cyan][sky underline]{len(data)}[/sky underline]')
-	console.print("[bold green][+][Ziko] Парсинг окончен![/bold green]\n")
+	console.print(f'[bold][?][Ziko] Всего объектов записано: [/bold]{len(data)}', style='#F4A616')
+	console.print('[bold][+][Ziko] Парсинг окончен![/bold]\n', style='#16C60C')
 
 
 if __name__ == '__main__':
-	main(URL_POINT)
+	parse()

@@ -12,10 +12,10 @@ def save_json(name: str):
 			console = Console()
 			time_now = datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 			result = func(*args, **kwargs)
-			with open(f'log/{time_now}_{name}.json', 'w', encoding='utf-8') as file:
+			with open(f'core/log/{time_now}_{name}.json', 'w', encoding='utf-8') as file:
 				json.dump(result, file, indent=3, ensure_ascii=False)
 			console.print(f'[+][JSON] Файл {name} был сохранен по пути:', style='#318CE7')
-			console.print(f'[?][JSON] {Path(sys.path[0], "log")}', style='#F4CA16')
+			console.print(f'[?][JSON] {Path(sys.path[0], "core", "log")}', style='#F4CA16')
 			return result
 
 		return wrapper

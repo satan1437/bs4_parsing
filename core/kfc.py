@@ -3,12 +3,13 @@ from typing import List
 
 import fake_useragent
 import requests
-
-from utils import save_json
 from art import tprint
 from rich.console import Console
 
+from utils import save_json
+
 URL_POINT = 'https://api.kfc.com/api/store/v2/store.get_restaurants?showClosed=true'
+console = Console()
 
 
 @save_json('raw_kfc')
@@ -19,8 +20,7 @@ def get_request(url: str) -> str:
 
 	if result.status_code == 200:
 		return json.loads(result.text)
-	else:
-		raise Exception(f'Connection error {result.status_code}')
+	raise Exception(f'Connection error {result.status_code}')
 
 
 @save_json('kfc')
@@ -43,6 +43,7 @@ def get_data(raw_data) -> List:
 			weekends_from = item['storePublic']['openingHours']['regularDaily'][5]['timeFrom'][0:5]
 			weekends_to = item['storePublic']['openingHours']['regularDaily'][5]['timeTill'][0:5]
 			working_hours = [f'пн - пт {weekdays_from} до {weekdays_to}', f'сб-вс {weekends_from}-{weekends_to}']
+
 		# Нормализую данные от тестовых значений
 		validation = [address, latlon, name, working_hours]
 		if all(validation) and name.startswith('KFC'):
@@ -56,14 +57,14 @@ def get_data(raw_data) -> List:
 
 
 def main(url: str) -> None:
+	tprint('KFC', font='cybermedium')
+	console.print("[bold cyan][+][KFC] Начинаю парсить...[/bold cyan]")
 	raw_data = get_request(url)
 	data = get_data(raw_data)
-	console.print(f'[bold cyan][?][KFC] Всего объектов: [/bold cyan][sky underline]{len(data)}[/sky underline]')
+	console.print(
+		f'[bold cyan][?][KFC] Всего объектов записано: [/bold cyan][sky underline]{len(data)}[/sky underline]')
+	console.print("[bold green][+][KFC] Парсинг окончен![/bold green]\n")
 
 
 if __name__ == '__main__':
-	tprint('KFC', font='cybermedium')
-	console = Console()
-	console.print("[bold cyan][+][KFC] Начинаю парсить...[/bold cyan]")
 	main(URL_POINT)
-	console.print("[bold green][+][KFC] Парсинг окончен![/bold green]\n")

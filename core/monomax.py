@@ -5,21 +5,22 @@ from art import tprint
 from bs4 import BeautifulSoup
 from rich.console import Console
 
-from .ziko import get_soup
 from .utils import save_json
+from .ziko import get_soup
 
 URL_POINT = 'https://monomax.by/map'
 console = Console()
 
 
 @save_json('monomax')
-def get_content(soup: BeautifulSoup) -> List:
+def get_content(soup: BeautifulSoup) -> List[dict]:
 	output = []
 
 	raw_geo_from_js = str(soup.find_all('script')[-1])
 	latlons = re.findall(r'\d+\.\d+,\s+\d+\.\d+', raw_geo_from_js)[1:]
 
 	shops = soup.find('div', class_='all-shops').find_all('div')
+	amount = len(shops)
 	for num, shop in enumerate(shops):
 		address = shop.find('p', class_='name').text
 
@@ -35,6 +36,7 @@ def get_content(soup: BeautifulSoup) -> List:
 			'name': 'Мономах',
 			'phones': phone
 		})
+		console.print(f'[bold][+][Monomax] Прогресс [{num + 1}/{amount}][/bold]', style='#BA2B31')
 	return output
 
 

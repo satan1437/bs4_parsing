@@ -23,11 +23,12 @@ def get_request(url: str) -> str:
 
 
 @save_json('kfc')
-def get_data(raw_data) -> List:
+def get_data(raw_data) -> List[dict]:
 	"""Пробегаю по дереву JSON и забираю нужную инфу"""
 	output = []
+	amount = len(raw_data['searchResults'])
 
-	for item in raw_data['searchResults']:
+	for count, item in enumerate(raw_data['searchResults']):
 
 		address = item['storePublic']['contacts']['streetAddress'].get('ru', False)
 		latlon = item['storePublic']['contacts']['coordinates']['geometry'].get('coordinates', False)
@@ -54,6 +55,10 @@ def get_data(raw_data) -> List:
 				'phones': phone,
 				'working_hours': working_hours
 			})
+		console.print(f'[bold][+][KFC] Прогресс [{count + 1}/{amount}][/bold]', style='#EB2742')
+	console.print(
+		f'[bold][?][KFC] Объектов не прошедших валидацию: [/bold]{len(raw_data["searchResults"]) - len(output)}',
+		style='#EB2742')
 	return output
 
 
@@ -64,6 +69,7 @@ def parse() -> None:
 	data = get_data(raw_data)
 	console.print(
 		f'[bold][?][KFC] Всего объектов записано: [/bold]{len(data)}', style='#EB2742')
+
 	console.print('[bold][+][KFC] Парсинг окончен![/bold]\n', style='#16C60C')
 
 

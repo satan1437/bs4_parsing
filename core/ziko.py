@@ -31,14 +31,13 @@ def get_soup(url: str) -> BeautifulSoup:
 
 
 @save_json('ziko')
-def get_content(soup: BeautifulSoup) -> List:
+def get_content(soup: BeautifulSoup) -> List[dict]:
 	"""Пробегаюсь по дереву и записываю list(dict)"""
 	output = []
 	rows = soup.find('table').find('tbody').find_all('tr')
 	amount = len(rows)
-	count = 0
 
-	for row in rows:
+	for count, row in enumerate(rows):
 
 		name = row.find('td', class_='mp-table-dermo').text.split()[:2]
 		name = ' '.join(name)
@@ -69,8 +68,7 @@ def get_content(soup: BeautifulSoup) -> List:
 			'phones': phones,
 			'working_hours': working_hours
 		})
-		count += 1
-		console.print(f'[bold][+][Ziko] Прогресс [{count}/{amount}][/bold]', style='#F4A616')
+		console.print(f'[bold][+][Ziko] Прогресс [{count + 1}/{amount}][/bold]', style='#F4A616')
 	return output
 
 
